@@ -131,29 +131,35 @@ public class MainWindow extends JFrame {
 
 
         saveButton.addActionListener((event)->{
-            // 新增
-            if (cachedId == null) {
-                Task task = new Task();
-                task.setId(UUID.randomUUID().toString());
-                task.setMarkTime(cachedMarkTime);
-                task.setContent(textArea.getText());
-                task.setCreateTime(new Date());
-                task.setModifyTime(new Date());
-                try (SqlSession session = sessionFactory.openSession(true)){
-                    TaskMapper taskMapper = session.getMapper(TaskMapper.class);
-                    taskMapper.insert(task);
+            try{
+                // 新增
+                if (cachedId == null) {
+                    Task task = new Task();
+                    task.setId(UUID.randomUUID().toString());
+                    task.setMarkTime(cachedMarkTime);
+                    task.setContent(textArea.getText());
+                    task.setCreateTime(new Date());
+                    task.setModifyTime(new Date());
+                    try (SqlSession session = sessionFactory.openSession(true)){
+                        TaskMapper taskMapper = session.getMapper(TaskMapper.class);
+                        taskMapper.insert(task);
+                    }
+                } else {
+                    // 修改
+                    Task task = new Task();
+                    task.setId(cachedId);
+                    task.setModifyTime(new Date());
+                    task.setContent(textArea.getText());
+                    try (SqlSession session = sessionFactory.openSession(true)){
+                        TaskMapper taskMapper = session.getMapper(TaskMapper.class);
+                        taskMapper.modify(task);
+                    }
                 }
-            } else {
-                // 修改
-                Task task = new Task();
-                task.setId(cachedId);
-                task.setModifyTime(new Date());
-                task.setContent(textArea.getText());
-                try (SqlSession session = sessionFactory.openSession(true)){
-                    TaskMapper taskMapper = session.getMapper(TaskMapper.class);
-                    taskMapper.modify(task);
-                }
+                JOptionPane.showMessageDialog(this, "保存成功!", "提示", JOptionPane.PLAIN_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "保存失败!", "提示", JOptionPane.ERROR_MESSAGE);
             }
+
         });
         setVisible(true);
     }
