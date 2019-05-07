@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.clay.task.mapper.TaskMapper">
+
+    <resultMap id="taskResultMap" type="org.clay.task.entity.Task">
+        <id column="id" property="id"/>
+        <result column="mark_time" property="markTime"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+    
+    <insert id="insert">
+        insert into task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">id,</if>
+            <if test="markTime != null and markTime != ''">mark_time,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="modifyTime != null">modify_time</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != ''">#{id},</if>
+            <if test="markTime != null and markTime != ''">#{markTime},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="modifyTime != null">#{modifyTime}</if>
+        </trim>
+    </insert>
+    <update id="modify">
+        update task set
+        <trim suffixOverrides=",">
+            <if test="markTime != null and markTime != ''">mark_time = #{markTime},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="modifyTime != null">modify_time = #{modifyTime}</if>
+        </trim>
+        where id = #{id}
+        
+    </update>
+    <delete id="delete">
+        delete from task where id =#{id}
+    </delete>
+    <select id="findAll" parameterType="org.clay.task.entity.Task" resultMap="taskResultMap">
+        select id, mark_time, content, create_time, modify_time from task
+        <where>
+            <trim suffixOverrides="and">
+                <if test="id != null and task.id != ''">id like '%'||#{id}||'%' and</if>
+                <if test="content != null and content != ''">content like '%'||#{content}||'%' and</if>
+                <if test="markTime != null and markTime != ''">unix_timestamp(mark_time)=unix_timestamp(#{markTime}) and</if>
+                <if test="createTime != null">create_time=#{createTime} and</if>
+                <if test="modifyTime != null">modify_time=#{modifyTime}</if>
+            </trim>
+        </where>
+    </select>
+</mapper>
