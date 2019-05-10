@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,10 +41,9 @@ public class MainWindow extends JFrame {
      */
     public MainWindow() throws HeadlessException {
         setTitle("周计划");
-        setBounds(500, 250, 500, 500);
-        setDefaultLookAndFeelDecorated(true);
+        setIconImage(getImageIcon("/image/avenger.ico").getImage());
+        setDefaultLookAndFeelDecorated(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        Container container = getContentPane();
 
         String content = "";
         //  从数据库中查询出当前的数据
@@ -96,7 +96,6 @@ public class MainWindow extends JFrame {
         JPanel panel3 = new JPanel();
         JButton saveButton = new JButton("保存");
 
-
         JButton exitButton = new JButton("退出");
         exitButton.addActionListener((event)->{
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
@@ -104,13 +103,13 @@ public class MainWindow extends JFrame {
         panel3.add(saveButton);
         panel3.add(exitButton);
 
-        container.add(panel1, BorderLayout.NORTH);
-        container.add(panel2, BorderLayout.CENTER);
-        container.add(panel3, BorderLayout.SOUTH);
+        add(panel1, BorderLayout.NORTH);
+        add(panel2, BorderLayout.CENTER);
+        add(panel3, BorderLayout.SOUTH);
         // 给下拉框绑定监听器
         comboBox.addItemListener((itemEvent)->{
             if (ItemEvent.SELECTED == itemEvent.getStateChange()){
-                // 计算出下拉框中数据对用的实际日期
+                // 计算出下拉框中数据对应的实际日期
                 cachedMarkTime = LocalDateTime.now().plusDays(comboBox.getSelectedIndex() - todayIndex).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 Task task = new Task();
                 task.setMarkTime(cachedMarkTime);
@@ -161,6 +160,26 @@ public class MainWindow extends JFrame {
             }
 
         });
+
+        setJMenuBar(new MenuBar());
+        // 自适应各组件尺寸
+        pack();
+        // 设置窗口位置在屏幕中间
+        setLocationRelativeTo(null);
         setVisible(true);
+    }
+    private ImageIcon getImageIcon(String path, String description) {
+        URL url = getClass().getResource(path);
+        if (url != null)
+            return new ImageIcon(url, description);
+        else
+            return null;
+    }
+    private ImageIcon getImageIcon(String path) {
+        URL url = getClass().getResource(path);
+        if (url != null)
+            return new ImageIcon(url);
+        else
+            return null;
     }
 }
