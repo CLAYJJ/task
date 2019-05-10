@@ -14,10 +14,13 @@ import java.util.List;
 import java.util.Vector;
 
 public class KafkaWindow extends JDialog {
-    public KafkaWindow() {
-        setLocationRelativeTo(null);
+    public KafkaWindow(JFrame frame, boolean modal) {
+        super(frame, modal);
         setTitle("kafka");
+        // 下面两个语句的顺序不能颠倒，否则对话框不会居中到屏幕中间
         setSize(800, 300);
+        setLocationRelativeTo(null);
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel panel1 = new JPanel();
         JLabel zkLabel = new JLabel("zookeeper address: ");

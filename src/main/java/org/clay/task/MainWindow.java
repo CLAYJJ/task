@@ -161,7 +161,7 @@ public class MainWindow extends JFrame {
 
         });
 
-        setJMenuBar(new MenuBar());
+        setJMenuBar(new MenuBar(this));
         // 自适应各组件尺寸
         pack();
         // 设置窗口位置在屏幕中间
